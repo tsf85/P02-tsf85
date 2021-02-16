@@ -5,8 +5,9 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 
+
 PATH = "C:\Program Files (x86)\chromedriver.exe"
-driver = webdriver.Chrome(PATH)
+driver = webdriver.Chrome(PATH)     
 
 #clears the file of any prior content
 def clear_vasel_list():
@@ -78,6 +79,7 @@ def merge_top_lists(source_file1, source_file2, merged_file):
 #merge_top_lists('Vasel_list.txt', 'Quinn_list.txt', 'Vasel_Quinn_list.txt')
 
 def genre_search(text_file):
+    
     #file = open(text_file, "r")
     #line = file.readline()
     #while line = True:
@@ -97,9 +99,19 @@ def genre_search(text_file):
     search.send_keys("kemet")
     search.send_keys(Keys.RETURN)
     driver.find_element_by_link_text("Kemet").click()
-
+    
+    #locates the game's genre
     time.sleep(5)
+    a_list = driver.find_element_by_xpath("//div[@class='feature-description']/span/a")
+   
+    print(a_list.text)
 
+
+    
+
+    
     driver.quit()
+ 
+    
 
 genre_search("kemet")
