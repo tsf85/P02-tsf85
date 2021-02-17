@@ -93,14 +93,24 @@ def genre_search(text_file):
 
     #get the game ID number for BGG API
     genre_index = ('{}'.format("gloomhaven"))
-    genre_url = ('https://boardgamegeek.com/xmlapi2/search?query={}&type=boardgame&exact=1'.format(genre_index))
-    print(genre_url)
-    response1 = requests.get(genre_url)
-    src = response1.content
-    soup = BeautifulSoup(src, 'html.parser')
-    links = soup.find_all('item')
-    for link in links:
-        game_id = link.get('id')
+    game_url = ('https://boardgamegeek.com/xmlapi2/search?query={}&type=boardgame&exact=1'.format(genre_index))
+    response1 = requests.get(game_url)
+    src1 = response1.content
+    soup1 = BeautifulSoup(src1, 'html.parser')
+    links1 = soup1.find_all('item')
+    for link1 in links1:
+        game_id = link1.get('id')
+    
+    #use the obtained game id to search for its stat page
+    game_id_url = ('https://boardgamegeek.com/xmlapi2/thing?id={}&stats=1').format(game_id)
+    print(game_id_url)
+    response2 = requests.get(game_id_url)
+    src2 = response2.content
+    soup2 = BeautifulSoup(src2, 'html.parser')
+    links2 = soup2.find_all(type="boardgamecategory")
+    for link2 in links2:
+        game_categories = link2.get('value')
+        print(game_categories)
     
 
         
