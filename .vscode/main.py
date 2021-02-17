@@ -6,8 +6,8 @@ from selenium.webdriver.common.keys import Keys
 import time
 
 
-PATH = "C:\Program Files (x86)\chromedriver.exe"
-driver = webdriver.Chrome(PATH)     
+#PATH = "C:\Program Files (x86)\chromedriver.exe"
+#driver = webdriver.Chrome(PATH)     
 
 #clears the file of any prior content
 def clear_vasel_list():
@@ -91,26 +91,34 @@ def genre_search(text_file):
     #con = requests.get('https://boardgamegeek.com/advsearch/boardgame', data=body)
     #print(con.text)
 
-    #opens Boardgamegeek title search, searches for a title, and then clicks the appropriate page link
-    driver.get('https://boardgamegeek.com/advsearch/boardgame')
-    print(driver.title)
+    #get the game ID number for BGG API
+    genre_index = ('{}'.format("gloomhaven"))
+    genre_url = ('https://boardgamegeek.com/xmlapi2/search?query={}&type=boardgame&exact=1'.format(genre_index))
+    print(genre_url)
+    response1 = requests.get(genre_url)
+    src = response1.content
+    soup = BeautifulSoup(src, 'html.parser')
+    links = soup.find_all('item')
+    for link in links:
+        game_id = link.get('id')
+    
 
-    search = driver.find_element_by_name("q")
-    search.send_keys("kemet")
-    search.send_keys(Keys.RETURN)
-    driver.find_element_by_link_text("Kemet").click()
+        
+    
+
+    #opens Boardgamegeek title search, searches for a title, and then clicks the appropriate page link
+    #driver.get('https://boardgamegeek.com/advsearch/boardgame')
+    
+    #search = driver.find_element_by_name("q")
+    #search.send_keys("kemet")
+    #search.send_keys(Keys.RETURN)
+    #driver.find_element_by_link_text("Kemet").click()
     
     #locates the game's genre
-    time.sleep(5)
-    a_list = driver.find_element_by_xpath("//div[@class='feature-description']/span/a")
-   
-    print(a_list.text)
-
-
-    
-
-    
-    driver.quit()
+    #time.sleep(5)
+    #a_list = driver.find_element_by_xpath("//div[@class='feature-description']/span/a")
+    #print(a_list.text)
+    #driver.quit()
  
     
 
