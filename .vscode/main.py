@@ -37,9 +37,9 @@ def get_vasel_top_list():
                 i += 10
                 get_vasel_top_list
 
-
-#get_vasel_top_list()
 #clear_vasel_list()
+#get_vasel_top_list()
+
 
 #clears the file of any prior content
 def clear_quinn_list():
@@ -78,43 +78,54 @@ def merge_top_lists(source_file1, source_file2, merged_file):
 
 #merge_top_lists('Vasel_list.txt', 'Quinn_list.txt', 'Vasel_Quinn_list.txt')
 
-def genre_search(text_file):
+def genre_search(text_file_in, text_file_out):
     
-    #file = open(text_file, "r")
-    #line = file.readline()
-    #while line = True:
-        #body = {'q':line}
-        #con = requests.get('https://boardgamegeek.com/advsearch/boardgame', params=body)
-        #print (con.text)
-
-    #body = {'q':text_file}
-    #con = requests.get('https://boardgamegeek.com/advsearch/boardgame', data=body)
-    #print(con.text)
-
-    #get the game ID number for BGG API
-    genre_index = ('{}'.format("gloomhaven"))
-    game_url = ('https://boardgamegeek.com/xmlapi2/search?query={}&type=boardgame&exact=1'.format(genre_index))
-    response1 = requests.get(game_url)
-    src1 = response1.content
-    soup1 = BeautifulSoup(src1, 'html.parser')
-    links1 = soup1.find_all('item')
-    for link1 in links1:
-        game_id = link1.get('id')
+    #reads the games from the top board game .txt files
+    with open(text_file_in) as in_file:
+        contents = in_file.readlines()
+        for content in contents:
+            content = content.replace(" ", "+")
+            content = content.rstrip()
+            #print(content)
+            #get the game ID number for BGG API
+            game_url = ('https://boardgamegeek.com/xmlapi2/search?query={}&type=boardgame&exact=1'.format(content))
+            print(game_url)
+            response1 = requests.get(game_url)
+            src1 = response1.content
+            soup1 = BeautifulSoup(src1, 'html.parser')
+            links1 = soup1.find_all('item')
+            time.sleep(0.2)
+            #print(links1)
+            for link1 in links1:
+                game_id = link1.get('id')
+                time.sleep(.2)
+                print(game_id)
+            #use the obtained game id to search for its stat page
+                game_id_url = ('https://boardgamegeek.com/xmlapi2/thing?id={}&stats=1').format(game_id)
+                print(game_id_url)
+                response2 = requests.get(game_id_url)
+                src2 = response2.content
+                soup2 = BeautifulSoup(src2, 'html.parser')
+                links2 = soup2.find_all(type="boardgamecategory")
+                for link2 in links2:
+                    game_categories = link2.get('value')
+                    time.sleep(.2)
+                    out_file = open(text_file_out, "a") 
+                    out_file.write(game_categories)
+                    out_file.write('\n')
+                    time.sleep(.2)
+                    out_file.close()
     
-    #use the obtained game id to search for its stat page
-    game_id_url = ('https://boardgamegeek.com/xmlapi2/thing?id={}&stats=1').format(game_id)
-    print(game_id_url)
-    response2 = requests.get(game_id_url)
-    src2 = response2.content
-    soup2 = BeautifulSoup(src2, 'html.parser')
-    links2 = soup2.find_all(type="boardgamecategory")
-    for link2 in links2:
-        game_categories = link2.get('value')
-        print(game_categories)
-    
+        in_file.close()
 
         
-    
+    #body = {'q':line}
+    #con = requests.get('https://boardgamegeek.com/advsearch/boardgame', params=body)
+    #print (con.text)
+
+    #body = {'q':text_file_in}
+    #con = requests.get('https://boardgamegeek.com/advsearch/boardgame', data=body)
+    #print(con.text)
 
     #opens Boardgamegeek title search, searches for a title, and then clicks the appropriate page link
     #driver.get('https://boardgamegeek.com/advsearch/boardgame')
@@ -132,4 +143,4 @@ def genre_search(text_file):
  
     
 
-genre_search("kemet")
+genre_search("Vasel_list.txt", 'Vasel_cat_list.txt')
