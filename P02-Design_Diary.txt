@@ -1,0 +1,26 @@
+I decided to expand on the top board games reviewer comparison script I wrote for the first project. What I had
+before was just some web scrapping that made text files with two big reviewer's top lists, and had a function that
+could make another file to write just the games that had in common. I've built on that to search through
+BGG's API with the boardgame lists in those files, and scrape all of the game category discriptors into yet another file.
+I then spent way too much time trying to figure out how to make sense of the data in those files, eventually discovering
+that I could put these files into a list and use Counter on them to just show the category and the number of times it
+occurs in the file as a dictionary. Then I wrap all that together with a nice double bar graph showing you their compared
+biases, useful for picking which reviewer you'd probably want to watch depending on the boardgame you're curious about.
+
+A particular struggle I had with this was trying to get my dictionaries built with crazy loops instead of stumbling
+upon the right tool sooner.
+
+There were a good many things I couldn't resolve. For one I got so into the goal of the project that I think the 
+actual analysis ended up a bit shallow in scope. There was quite a bit of trouble with boardgamegeek's API not letting
+me use escapes to properly search for any title with a ":" or "&" in it. I also couldn't quite figure out where best
+to put some time.sleep's to keep the flow of the data collection going without skipping things.
+
+Advice for a future student... Listen to the teacher when he says not to waste time on scraping. That being said,
+I didn't really know how else to get the data I needed.
+
+Every success was a blast with this project. I can't wait to add more to this program. I want to add more reviewers,
+and clean up the API searching.
+
+https://github.com/tsf85/P02-tsf85/blob/main/P01-tsf85-gif.gif
+
+

@@ -127,7 +127,7 @@ def compile_data(cat_file_in1, cat_file_in2, name1, name2):
     with open(cat_file_in1) as in_file1:
         categories_list1 = [line.strip() for line in in_file1]
         in_file1.close()
-        #print(cat_list)
+        print(categories_list1)
         compiled_cats1 = (Counter(categories_list1))
     
     with open(cat_file_in2) as in_file2:
