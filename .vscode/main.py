@@ -121,18 +121,16 @@ def genre_search(text_file_in, text_file_out):
     
         in_file.close()
 
-#genre_search("Quinn_list.txt", 'Quinn_cat_list.txt')
+#genre_search("Quinn_list.txt", 'Quinn_cat_list2.txt')
 
 def compile_data(cat_file_in1, cat_file_in2, name1, name2):
     with open(cat_file_in1) as in_file1:
-        #cat_list = in_file.readlines()
         categories_list1 = [line.strip() for line in in_file1]
         in_file1.close()
         #print(cat_list)
         compiled_cats1 = (Counter(categories_list1))
     
     with open(cat_file_in2) as in_file2:
-        #cat_list = in_file.readlines()
         categories_list2 = [line.strip() for line in in_file2]
         in_file2.close()
         #print(cat_list)
@@ -149,6 +147,9 @@ def compile_data(cat_file_in1, cat_file_in2, name1, name2):
         plot.xlabel('Categories', fontsize=16)
         plot.ylabel('Occurences', fontsize=16)
 
+        
+
+        
         plot.show()
       
               
