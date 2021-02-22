@@ -1,13 +1,14 @@
+from io import StringIO
 import requests
 from bs4 import BeautifulSoup
 from csv import writer
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+import pandas as pd
 import time
+from collections import Counter
+from matplotlib import pyplot as plot
+import numpy as np
 
 
-#PATH = "C:\Program Files (x86)\chromedriver.exe"
-#driver = webdriver.Chrome(PATH)     
 
 #clears the file of any prior content
 def clear_vasel_list():
@@ -94,53 +95,63 @@ def genre_search(text_file_in, text_file_out):
             src1 = response1.content
             soup1 = BeautifulSoup(src1, 'html.parser')
             links1 = soup1.find_all('item')
-            time.sleep(0.2)
+            time.sleep(0.5)
             #print(links1)
             for link1 in links1:
                 game_id = link1.get('id')
-                time.sleep(.2)
+                time.sleep(.5)
                 print(game_id)
             #use the obtained game id to search for its stat page
                 game_id_url = ('https://boardgamegeek.com/xmlapi2/thing?id={}&stats=1').format(game_id)
                 print(game_id_url)
                 response2 = requests.get(game_id_url)
+                time.sleep(.1)
                 src2 = response2.content
                 soup2 = BeautifulSoup(src2, 'html.parser')
+                #scrapes the game categories and dumps them into designated file
                 links2 = soup2.find_all(type="boardgamecategory")
                 for link2 in links2:
                     game_categories = link2.get('value')
-                    time.sleep(.2)
+                    time.sleep(.5)
                     out_file = open(text_file_out, "a") 
                     out_file.write(game_categories)
                     out_file.write('\n')
-                    time.sleep(.2)
+                    time.sleep
                     out_file.close()
     
         in_file.close()
 
+#genre_search("Quinn_list.txt", 'Quinn_cat_list.txt')
+
+def compile_data(cat_file_in1, cat_file_in2, name1, name2):
+    with open(cat_file_in1) as in_file1:
+        #cat_list = in_file.readlines()
+        categories_list1 = [line.strip() for line in in_file1]
+        in_file1.close()
+        #print(cat_list)
+        compiled_cats1 = (Counter(categories_list1))
+    
+    with open(cat_file_in2) as in_file2:
+        #cat_list = in_file.readlines()
+        categories_list2 = [line.strip() for line in in_file2]
+        in_file2.close()
+        #print(cat_list)
+        compiled_cats2 = (Counter(categories_list2))
         
-    #body = {'q':line}
-    #con = requests.get('https://boardgamegeek.com/advsearch/boardgame', params=body)
-    #print (con.text)
-
-    #body = {'q':text_file_in}
-    #con = requests.get('https://boardgamegeek.com/advsearch/boardgame', data=body)
-    #print(con.text)
-
-    #opens Boardgamegeek title search, searches for a title, and then clicks the appropriate page link
-    #driver.get('https://boardgamegeek.com/advsearch/boardgame')
-    
-    #search = driver.find_element_by_name("q")
-    #search.send_keys("kemet")
-    #search.send_keys(Keys.RETURN)
-    #driver.find_element_by_link_text("Kemet").click()
-    
-    #locates the game's genre
-    #time.sleep(5)
-    #a_list = driver.find_element_by_xpath("//div[@class='feature-description']/span/a")
-    #print(a_list.text)
-    #driver.quit()
+        df1 = pd.DataFrame.from_dict(compiled_cats1, orient='index')
+        df2 = pd.DataFrame.from_dict(compiled_cats2, orient='index')
+        fig = plot.figure()
  
-    
 
-genre_search("Vasel_list.txt", 'Vasel_cat_list.txt')
+        df1.plot.bar(color='red', ax=fig.gca(), position=0, width=0.3)
+        df2.plot.bar(color='blue', ax=fig.gca(), position=1, width=0.3)
+        plot.legend([name1, name2])
+        plot.xlabel('Categories', fontsize=16)
+        plot.ylabel('Occurences', fontsize=16)
+
+        plot.show()
+      
+              
+            
+
+compile_data("Vasel_cat_list.txt", "Quinn_cat_list.txt", "Vasel", "Quinn")
