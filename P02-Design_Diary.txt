@@ -20,9 +20,9 @@ I didn't really know how else to get the data I needed.
 
 Every success was a blast with this project. I can't wait to add more to this program. Hopefully you don't get straight
 to the grading, because I want to add a smaller category search function for a boardgame one might be curious about,
-that prints that games categories, allowing you to run just those against the reviewers to see who tends to link the
-mean of those categories frequently. Also I want to add more reviewers, and clean up the API searching.
+that graps just that games categories, allowing you to run just those against the reviewers to see who tends to link the
+mean of those categories frequently(I added this!). Also I want to add more reviewers, and clean up the API searching.
 
 https://github.com/tsf85/P02-tsf85/blob/main/P01-tsf85-gif.gif
-
+https://github.com/tsf85/P02-tsf85/blob/main/P02-tsf85-gif2.gif
 
