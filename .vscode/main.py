@@ -137,9 +137,6 @@ def compile_data(cat_file_in1, cat_file_in2, name1, name2):
         compiled_cats2 = (Counter(categories_list2))
         
         #print(compiled_cats1)
-
-        res = {key: compiled_cats1[key] for key in compiled_cats1.keys() 
-                               & {'Ancient', 'Card Game'}}
         
         df1 = pd.DataFrame.from_dict(compiled_cats1, orient='index')
         df2 = pd.DataFrame.from_dict(compiled_cats2, orient='index')
@@ -155,4 +152,77 @@ def compile_data(cat_file_in1, cat_file_in2, name1, name2):
         
         plot.show()
 
-compile_data("Vasel_cat_list.txt", "Quinn_cat_list.txt", "Vasel", "Quinn")
+#compile_data("Vasel_cat_list.txt", "Quinn_cat_list.txt", "Vasel", "Quinn")
+
+#perform search for specific boardgame, open category files, search files for relevant categories and send to bar graph.
+def bg_lookup(bg_name, cat_file_in1, cat_file_in2, name1, name2):
+    bg_name = bg_name.replace(" ", "+")
+    bg_name = bg_name.rstrip()
+    #print(content)
+    #get the game ID number for BGG API
+    game_url = ('https://boardgamegeek.com/xmlapi2/search?query={}&type=boardgame&exact=1'.format(bg_name))
+    print(game_url)
+    response1 = requests.get(game_url)
+    src1 = response1.text
+    soup1 = BeautifulSoup(src1, 'html.parser')
+    links1 = soup1.find_all('item')
+    
+    #print(links1)
+    for link1 in links1:
+        game_id = link1.get('id')
+        
+        print(game_id)
+        #use the obtained game id to search for its stat page
+        game_id_url = ('https://boardgamegeek.com/xmlapi2/thing?id={}&stats=1').format(game_id)
+        print(game_id_url)
+        response2 = requests.get(game_id_url)
+        
+        src2 = response2.content
+        soup2 = BeautifulSoup(src2, 'html.parser')
+        #scrapes the game categories and dumps them into designated file
+        links2 = soup2.find_all(type="boardgamecategory")
+        lookup_list = []
+        for link2 in links2:
+            game_categories = link2.get('value')
+            
+            lookup_list.append(game_categories)
+
+
+    with open(cat_file_in1) as in_file1:
+        categories_list1 = [line.strip() for line in in_file1]
+        in_file1.close()
+        #print(categories_list1)
+        compiled_cats1 = (Counter(categories_list1))
+   
+    with open(cat_file_in2) as in_file2:
+        categories_list2 = [line.strip() for line in in_file2]
+        in_file2.close()
+        #print(cat_list)
+        compiled_cats2 = (Counter(categories_list2))
+        #lookup_list = str(lookup_list)
+        print(lookup_list)
+        
+        
+        
+        res1 = {key: compiled_cats1[key] for key in compiled_cats1.keys() 
+                & lookup_list}
+        res2 = {key: compiled_cats2[key] for key in compiled_cats2.keys() 
+                & lookup_list}
+        print(res1)
+        
+        df1 = pd.DataFrame.from_dict(res1, orient='index')
+        df2 = pd.DataFrame.from_dict(res2, orient='index')
+        fig = plot.figure()
+
+            
+
+        df1.plot.bar(color='orange', ax=fig.gca(), position=0, width=0.3)
+        df2.plot.bar(color='blue', ax=fig.gca(), position=1, width=0.3)
+        plot.legend([name1, name2])
+        plot.xlabel('Categories', fontsize=16)
+        plot.ylabel('Occurences', fontsize=16)
+            
+        plot.show()
+    #example: copy this to another function to pull specific datasets within the dicts
+
+bg_lookup("Kemet", "Vasel_cat_list.txt", "Quinn_cat_list.txt", 'Vasel', 'Quinn')
